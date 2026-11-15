@@ -1,23 +1,49 @@
 /**
  * ==============================================================================
- * GIAO DIỆN LƯU TRỮ HÌNH ẢNH & SỰ KIỆN LK17
+ * PHONG CÁCH THIẾT KẾ: KỶ YẾU ĐIỆN TỬ LK17 — "BA NĂM. MỘT THANH XUÂN."
  * ==============================================================================
- * Thuần CSS, tối ưu di động và Zalo WebView, không dùng thư viện ngoài.
+ * Chuyển thể trực tiếp từ Figma Prototype (https://erase-plain-54689013.figma.site/)
+ * Bảng màu: Deep Ink Green (#173c3a), Warm Cream (#f4efe4), Antique Gold (#d9a441)
+ * Typography: 'DM Serif Display' (tiêu đề, cột mốc) & 'Be Vietnam Pro' (nội dung)
  */
 
 :root {
-  --bg-color: #0f1115;
-  --card-bg: #1a1d24;
-  --card-border: #282c35;
-  --text-main: #f0f2f5;
-  --text-sub: #9ba1b0;
-  --accent: #3b82f6;
-  --accent-hover: #2563eb;
-  --danger: #ef4444;
-  --skeleton-base: #222630;
-  --skeleton-highlight: #2e3342;
-  --header-bg: rgba(15, 17, 21, 0.92);
-  --font-system: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  /* Tông màu Mực đậm (Deep Ink) */
+  --ink: #173c3a;
+  --ink-deep: #0c2928;
+  --ink-surface: #1d4644;
+  --ink-border: #285552;
+
+  /* Bề mặt Giấy & Kem ấm (Paper & Warm Cream) */
+  --cream: #f4efe4;
+  --cream-soft: #eae3d2;
+  --paper: #fffdf7;
+  --paper-hover: #ffffff;
+
+  /* Điểm nhấn Cổ điển (Accents) */
+  --gold: #d9a441;
+  --gold-light: #edcc82;
+  --gold-glow: rgba(217, 164, 65, 0.2);
+  --rust: #b45b3e;
+
+  /* Chữ & Đường nét */
+  --text-dark: #1b2624;
+  --text-muted: #5e6b68;
+  --text-light: #f4efe4;
+  --text-light-sub: #b2c2bf;
+  --line: rgba(23, 60, 58, 0.12);
+  --line-gold: rgba(217, 164, 65, 0.35);
+
+  /* Đổ bóng & Bo góc */
+  --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+  --shadow-elevated: 0 20px 40px -10px rgba(0, 0, 0, 0.35);
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  /* Font chữ */
+  --font-serif: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -26,335 +52,941 @@
   padding: 0;
 }
 
-body {
-  font-family: var(--font-system);
-  background-color: var(--bg-color);
-  color: var(--text-main);
-  min-height: 100vh;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  padding-bottom: 40px;
+html {
+  scroll-behavior: smooth;
 }
 
-/* Zalo Banner */
+body {
+  font-family: var(--font-sans);
+  background-color: var(--cream);
+  color: var(--text-dark);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Container */
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ==================== 1. ZALO BANNER ==================== */
 .zalo-banner {
-  background: #2563eb;
-  color: #fff;
-  padding: 10px 16px;
+  background: var(--ink);
+  color: var(--gold-light);
+  border-bottom: 1px solid var(--gold);
+  padding: 10px 18px;
   font-size: 13px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   position: sticky;
   top: 0;
-  z-index: 1000;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  z-index: 1100;
 }
 
 .zalo-banner-text {
   flex: 1;
-  padding-right: 12px;
 }
 
 .zalo-banner-close {
   background: none;
   border: none;
-  color: #fff;
+  color: var(--gold-light);
   font-size: 18px;
   cursor: pointer;
-  padding: 0 4px;
+  padding: 0 8px;
 }
 
-/* Container */
-.container {
-  max-width: 1200px;
+/* ==================== 2. NAVBAR ==================== */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(244, 239, 228, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line);
+  transition: all 0.3s ease;
+}
+
+.nav-container {
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 0 16px;
-}
-
-/* Trang chủ - Header */
-.site-header {
-  padding: 40px 16px 24px;
-  text-align: center;
-}
-
-.site-title {
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.5px;
-  color: #fff;
-  margin-bottom: 8px;
-}
-
-.site-subtitle {
-  font-size: 14px;
-  color: var(--text-sub);
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-/* Lưới thẻ sự kiện (Trang chủ) */
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 16px;
-  margin-top: 24px;
-}
-
-@media (min-width: 768px) {
-  .events-grid {
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
-  }
-}
-
-@media (min-width: 1024px) {
-  .events-grid {
-    grid-template-columns: repeat(4, 1fr);
-    gap: 24px;
-  }
-}
-
-.event-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 12px;
-  overflow: hidden;
-  text-decoration: none;
-  color: inherit;
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  padding: 14px 24px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
-.event-card:hover {
-  transform: translateY(-3px);
-  border-color: #3e4452;
+.nav-brand {
+  text-decoration: none;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 18px;
 }
 
-.event-cover-wrapper {
+.brand-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+}
+
+.brand-dot {
+  color: var(--gold);
+  font-size: 20px;
+}
+
+.brand-sub {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.nav-menu {
+  display: flex;
+  gap: 28px;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.nav-link:hover {
+  color: var(--rust);
+}
+
+.nav-badge {
+  font-size: 12px;
+  font-weight: 600;
+  background: rgba(217, 164, 65, 0.15);
+  color: var(--ink);
+  border: 1px solid var(--gold);
+  padding: 4px 12px;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ==================== 3. HERO SECTION ==================== */
+.hero-section {
+  padding: 60px 20px 80px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--cream) 0%, #ebe4d5 100%);
   position: relative;
+}
+
+.hero-content {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2.5px;
+  font-weight: 600;
+  color: var(--rust);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 6vw, 4.2rem);
+  font-weight: 400;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 20px;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--text-muted);
+  max-width: 540px;
+  margin: 0 auto 40px;
+  line-height: 1.6;
+}
+
+/* Khung ảnh Hero sang trọng */
+.hero-frame-wrap {
+  margin: 0 auto 36px;
+  max-width: 680px;
+}
+
+.hero-frame {
+  background: var(--paper);
+  padding: 14px 14px 20px;
+  border-radius: var(--radius-md);
+  box-shadow: 0 15px 35px rgba(23, 60, 58, 0.15);
+  border: 1px solid rgba(23, 60, 58, 0.08);
+  transform: rotate(-0.8deg);
+  transition: transform 0.3s ease;
+}
+
+.hero-frame:hover {
+  transform: rotate(0deg);
+}
+
+.hero-img {
   width: 100%;
-  aspect-ratio: 4 / 3;
-  background-color: var(--skeleton-base);
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+}
+
+.hero-frame-caption {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 15px;
+  color: var(--text-muted);
+  margin-top: 14px;
+}
+
+.hero-scroll-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ink);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 8px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 253, 247, 0.6);
+  transition: all 0.2s;
+}
+
+.hero-scroll-btn:hover {
+  background: var(--paper);
+  border-color: var(--gold);
+  transform: translateY(2px);
+}
+
+/* ==================== 4. OUR STORY SECTION ==================== */
+.story-section {
+  padding: 100px 20px;
+  background-color: var(--cream);
+  position: relative;
   overflow: hidden;
 }
 
-.event-cover {
+.story-watermark {
+  position: absolute;
+  top: 40px;
+  right: 5%;
+  font-family: var(--font-serif);
+  font-size: 180px;
+  color: rgba(23, 60, 58, 0.035);
+  pointer-events: none;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.story-header {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 50px;
+}
+
+.section-eyebrow {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--rust);
+  margin-bottom: 12px;
+}
+
+.eyebrow-gold {
+  color: var(--gold);
+}
+
+.section-heading {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 16px;
+}
+
+.heading-light {
+  color: var(--paper);
+}
+
+.section-heading em {
+  font-style: italic;
+  color: var(--rust);
+}
+
+.story-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Stats 3 cột */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  max-width: 780px;
+  margin: 0 auto 60px;
+}
+
+@media (max-width: 600px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+.stat-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  padding: 26px 16px;
+  border-radius: var(--radius-md);
+  text-align: center;
+  box-shadow: var(--shadow-card);
+}
+
+.stat-number {
+  font-family: var(--font-serif);
+  font-size: 38px;
+  color: var(--gold);
+  line-height: 1.1;
+  margin-bottom: 6px;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Polaroid Photo Card */
+.polaroid-wrapper {
+  max-width: 420px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.polaroid-card {
+  background: var(--paper);
+  padding: 16px 16px 28px;
+  border-radius: 6px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.1);
+  transform: rotate(1.2deg);
+  position: relative;
+}
+
+.polaroid-tape {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 26px;
+  background: rgba(230, 215, 185, 0.7);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.polaroid-img-box {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  background: var(--cream-soft);
+}
+
+.polaroid-img-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.event-info {
-  padding: 12px 14px;
-  flex: 1;
+.polaroid-caption {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 17px;
+  color: var(--ink);
+  text-align: center;
+  margin-top: 18px;
+}
+
+/* ==================== 5. TIMELINE SECTION (HÀNH TRÌNH) ==================== */
+.timeline-section {
+  padding: 100px 20px 120px;
+  background-color: var(--ink);
+  color: var(--text-light);
+  position: relative;
+}
+
+.timeline-header {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 70px;
+}
+
+.timeline-intro {
+  font-size: 15px;
+  color: var(--text-light-sub);
+  margin-top: 12px;
+}
+
+/* Trục dọc Timeline */
+.timeline-container {
+  position: relative;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  background: linear-gradient(180deg, rgba(217,164,65,0.1) 0%, var(--gold) 15%, var(--gold) 85%, rgba(217,164,65,0.1) 100%);
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+@media (max-width: 768px) {
+  .timeline-line {
+    left: 24px;
+  }
+}
+
+.timeline-list {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+/* Nút mốc năm (Year Node) */
+.timeline-year-node {
+  align-self: center;
+  background: var(--ink-deep);
+  border: 2px solid var(--gold);
+  color: var(--gold-light);
+  font-family: var(--font-serif);
+  font-size: 18px;
+  font-weight: 700;
+  padding: 8px 22px;
+  border-radius: 30px;
+  box-shadow: 0 0 20px var(--gold-glow);
+  position: relative;
+  z-index: 5;
+  margin: 10px 0;
+}
+
+@media (max-width: 768px) {
+  .timeline-year-node {
+    align-self: flex-start;
+    margin-left: 2px;
+  }
+}
+
+/* Thẻ sự kiện Timeline (Milestone Card) */
+.timeline-item {
+  display: flex;
+  position: relative;
+  width: 50%;
+}
+
+.timeline-item.left {
+  align-self: flex-start;
+  padding-right: 48px;
+  justify-content: flex-end;
+}
+
+.timeline-item.right {
+  align-self: flex-end;
+  padding-left: 48px;
+  justify-content: flex-start;
+}
+
+@media (max-width: 768px) {
+  .timeline-item,
+  .timeline-item.left,
+  .timeline-item.right {
+    width: 100%;
+    align-self: flex-start;
+    padding-left: 60px;
+    padding-right: 0;
+    justify-content: flex-start;
+  }
+}
+
+/* Điểm chấm trên trục */
+.timeline-dot {
+  position: absolute;
+  top: 36px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  border: 3px solid var(--ink-deep);
+  box-shadow: 0 0 8px var(--gold);
+  z-index: 4;
+}
+
+.timeline-item.left .timeline-dot {
+  right: -7px;
+}
+
+.timeline-item.right .timeline-dot {
+  left: -7px;
+}
+
+@media (max-width: 768px) {
+  .timeline-item.left .timeline-dot,
+  .timeline-item.right .timeline-dot {
+    left: 17px;
+  }
+}
+
+/* Thẻ nội dung Giấy trắng */
+.milestone-card {
+  background: var(--paper);
+  color: var(--text-dark);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  width: 100%;
+  max-width: 440px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
 }
 
-.event-title {
-  font-size: 15px;
-  font-weight: 600;
-  line-height: 1.4;
-  margin-bottom: 6px;
-  color: #fff;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
+.milestone-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.3);
+}
+
+.milestone-cover-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
   overflow: hidden;
+  background: var(--cream-soft);
 }
 
-.event-meta {
-  font-size: 12px;
-  color: var(--text-sub);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
+.milestone-cover {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
 }
 
-/* Chân trang */
-.site-footer {
-  margin-top: 50px;
-  text-align: center;
-  font-size: 13px;
-  color: var(--text-sub);
-  padding: 20px 16px;
-  border-top: 1px solid var(--card-border);
+.milestone-card:hover .milestone-cover {
+  transform: scale(1.04);
 }
 
-/* Trang sự kiện */
-.event-page-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  background: var(--header-bg);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--card-border);
-}
-
-.event-header-nav {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  gap: 12px;
-}
-
-.btn-back {
-  background: none;
-  border: none;
+.milestone-photo-badge {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(12, 41, 40, 0.85);
+  backdrop-filter: blur(4px);
   color: #fff;
-  font-size: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: 1px solid rgba(217, 164, 65, 0.4);
+}
+
+.milestone-body {
+  padding: 22px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.milestone-tag-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--rust);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.milestone-dot-sep {
+  color: var(--line);
+}
+
+.milestone-title {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 12px;
+}
+
+.milestone-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 14px;
+  color: var(--rust);
+  border-left: 2px solid var(--rust);
+  padding-left: 12px;
+  margin: 6px 0 18px;
+  line-height: 1.5;
+}
+
+.milestone-btn {
+  margin-top: auto;
+  align-self: flex-start;
+  background: transparent;
+  color: var(--ink);
+  border: 1px solid var(--line);
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 6px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.milestone-btn:hover {
+  background: var(--ink);
+  color: var(--gold-light);
+  border-color: var(--ink);
+}
+
+/* ==================== 6. LETTER SECTION ==================== */
+.letter-section {
+  padding: 100px 20px;
+  background-color: var(--cream);
+}
+
+.letter-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .letter-grid {
+    grid-template-columns: 1fr;
+    gap: 36px;
+  }
+}
+
+.vintage-frame {
+  background: var(--paper);
+  padding: 14px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+}
+
+.vintage-frame img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
   border-radius: 8px;
+  display: block;
+}
+
+.letter-paper {
+  background: var(--paper);
+  padding: 40px 36px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  border: 1px solid var(--line);
+}
+
+.letter-title {
+  font-family: var(--font-serif);
+  font-size: 26px;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 20px;
+}
+
+.letter-body p {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+  margin-bottom: 18px;
+}
+
+.letter-sign {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 18px;
+  color: var(--rust) !important;
+  text-align: right;
+  margin-top: 10px;
+}
+
+/* ==================== 7. FOOTER ==================== */
+.vintage-footer {
+  background: var(--ink-deep);
+  color: var(--text-light-sub);
+  padding: 60px 20px 40px;
+  text-align: center;
+  border-top: 1px solid var(--ink-border);
+}
+
+.footer-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--gold-light);
+  margin-bottom: 8px;
+}
+
+.footer-sub {
+  font-size: 14px;
+  color: var(--text-light-sub);
+  margin-bottom: 12px;
+}
+
+.footer-updated {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-bottom: 28px;
+}
+
+.footer-back-top {
+  display: inline-block;
+  color: var(--gold);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 18px;
+  border: 1px solid rgba(217, 164, 65, 0.3);
+  border-radius: 20px;
+  transition: all 0.2s;
+}
+
+.footer-back-top:hover {
+  background: var(--gold);
+  color: var(--ink);
+}
+
+/* ==================== 8. EVENT GALLERY MODAL ==================== */
+.event-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.15s;
+  padding: 20px;
 }
 
-.btn-back:hover {
-  background: rgba(255, 255, 255, 0.1);
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(12, 41, 40, 0.85);
+  backdrop-filter: blur(8px);
 }
 
-.event-header-info {
-  flex: 1;
-  min-width: 0;
-}
-
-.event-header-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #fff;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.event-header-date {
-  font-size: 12px;
-  color: var(--text-sub);
-}
-
-/* Tabs */
-.event-tabs {
+.modal-dialog {
+  position: relative;
+  z-index: 2;
+  background: var(--cream);
+  width: 100%;
+  max-width: 980px;
+  max-height: 90vh;
+  border-radius: var(--radius-lg);
   display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--gold);
+}
+
+.modal-header {
+  padding: 20px 24px;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-tag-row {
+  display: flex;
+  align-items: center;
   gap: 8px;
-  padding: 0 16px 10px;
+  font-size: 12px;
+  color: var(--rust);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.modal-badge-tag {
+  background: rgba(180, 91, 62, 0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+}
+
+.modal-title {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  color: var(--ink);
+}
+
+.modal-close-btn {
+  background: var(--cream);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.modal-close-btn:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
+.modal-tabs-wrap {
+  background: var(--paper);
+  padding: 0 24px 12px;
+  border-bottom: 1px solid var(--line);
+}
+
+.modal-tabs {
+  display: flex;
+  gap: 10px;
 }
 
 .tab-btn {
   background: transparent;
-  border: 1px solid transparent;
-  color: var(--text-sub);
-  padding: 6px 14px;
+  border: 1px solid var(--line);
+  color: var(--text-muted);
+  padding: 6px 16px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .tab-btn.active {
-  background: #272d3b;
-  color: #fff;
-  border-color: #3e4759;
+  background: var(--ink);
+  color: var(--gold-light);
+  border-color: var(--ink);
 }
 
-/* Lưới ảnh sự kiện */
-.media-grid {
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+/* Lưới ảnh trong Modal */
+.gallery-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  padding: 2px 0;
+  gap: 12px;
 }
 
 @media (min-width: 768px) {
-  .media-grid {
-    grid-template-columns: repeat(5, 1fr);
+  .gallery-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
   }
 }
 
-@media (min-width: 1024px) {
-  .media-grid {
-    grid-template-columns: repeat(6, 1fr);
+@media (max-width: 480px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
   }
 }
 
-.grid-item {
+.gallery-item {
   position: relative;
   aspect-ratio: 1 / 1;
-  background-color: var(--skeleton-base);
+  border-radius: var(--radius-sm);
   overflow: hidden;
+  background: var(--cream-soft);
   cursor: pointer;
-  display: block;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-.grid-img {
+.gallery-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 0.2s ease;
+  transition: transform 0.25s ease;
 }
 
-.grid-item:hover .grid-img {
-  transform: scale(1.03);
+.gallery-item:hover .gallery-img {
+  transform: scale(1.05);
 }
 
-/* Nhãn video trên lưới */
-.video-badge {
+.gallery-item-index {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.35);
+  top: 8px;
+  left: 8px;
+  background: rgba(12, 41, 40, 0.7);
   color: #fff;
-  pointer-events: none;
-}
-
-.video-play-icon {
-  width: 38px;
-  height: 38px;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  margin-bottom: 4px;
-}
-
-.video-duration {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  background: rgba(0, 0, 0, 0.7);
   padding: 2px 6px;
   border-radius: 4px;
 }
 
-/* Phù hiệu ảnh hỏng */
-.has-broken-img::after {
-  content: "⚠️";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  opacity: 0.5;
-}
-
-/* Lightbox Modal */
+/* ==================== 9. LIGHTBOX XEM ẢNH ==================== */
 .lightbox-overlay {
   position: fixed;
   inset: 0;
   background: #000;
-  z-index: 2000;
+  z-index: 2500;
   display: flex;
   flex-direction: column;
   user-select: none;
@@ -369,14 +1001,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+  background: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent);
   z-index: 10;
 }
 
 .lightbox-counter {
   font-size: 14px;
   font-weight: 500;
-  color: #e5e7eb;
+  color: var(--gold-light);
+  font-family: var(--font-serif);
 }
 
 .lightbox-actions {
@@ -389,8 +1022,8 @@ body {
   background: rgba(255, 255, 255, 0.15);
   border: none;
   color: #fff;
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -405,13 +1038,13 @@ body {
 }
 
 .btn-download-flow {
-  background: var(--accent);
-  color: #fff;
+  background: var(--gold);
+  color: var(--ink-deep);
   border: none;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 20px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -420,19 +1053,15 @@ body {
 }
 
 .btn-download-flow:hover {
-  background: var(--accent-hover);
+  background: var(--gold-light);
 }
 
 .btn-download-flow.is-ready {
   background: #10b981;
+  color: #fff;
 }
 
-.btn-download-flow:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-/* Vùng hiển thị ảnh lớn trong Lightbox */
+/* Vùng hiển thị ảnh lớn (Bảo vệ tuyệt đối thao tác nhấn giữ) */
 .lightbox-body {
   flex: 1;
   position: relative;
@@ -444,15 +1073,12 @@ body {
   height: 100%;
 }
 
-/* QUY TẮC BẢO VỆ NHẤN GIỮ ĐỂ LƯU:
-   Tuyệt đối không có phần tử phủ lên ảnh, không chặn menu chuột phải / touchcallout */
 .lightbox-img-wrapper {
   max-width: 100%;
   max-height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  position: relative;
 }
 
 .lightbox-img {
@@ -460,11 +1086,10 @@ body {
   max-height: 100vh;
   object-fit: contain;
   display: block;
-  -webkit-touch-callout: default !important; /* Đảm bảo menu lưu ảnh của iOS luôn mở được */
+  -webkit-touch-callout: default !important;
   user-select: auto !important;
 }
 
-/* Nút chuyển ảnh trên máy tính */
 .lightbox-nav-btn {
   position: absolute;
   top: 50%;
@@ -472,13 +1097,13 @@ body {
   background: rgba(0, 0, 0, 0.4);
   color: #fff;
   border: none;
-  width: 44px;
-  height: 60px;
+  width: 48px;
+  height: 68px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 26px;
+  font-size: 30px;
   transition: background 0.2s;
   z-index: 5;
 }
@@ -499,7 +1124,7 @@ body {
 
 @media (max-width: 768px) {
   .lightbox-nav-btn {
-    display: none; /* Trên điện thoại chuyển ảnh bằng cử chỉ vuốt */
+    display: none;
   }
 }
 
@@ -512,21 +1137,21 @@ body {
   text-align: center;
   font-size: 12px;
   color: rgba(255, 255, 255, 0.7);
-  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
   pointer-events: none;
 }
 
-/* Video Overlay */
+/* ==================== 10. VIDEO OVERLAY ==================== */
 .video-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.95);
-  z-index: 2000;
+  background: rgba(12, 41, 40, 0.95);
+  z-index: 2500;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 16px;
+  padding: 20px;
 }
 
 .video-container {
@@ -535,9 +1160,10 @@ body {
   aspect-ratio: 16 / 9;
   background: #000;
   position: relative;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: var(--shadow-elevated);
+  border: 1px solid var(--gold);
 }
 
 .video-iframe {
@@ -548,19 +1174,19 @@ body {
 
 .video-close-btn {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 20px;
+  right: 20px;
 }
 
 .video-fallback-link {
   margin-top: 16px;
-  color: #60a5fa;
+  color: var(--gold-light);
   font-size: 13px;
   text-decoration: underline;
   cursor: pointer;
 }
 
-/* Toast Notifications */
+/* ==================== 11. TOAST NOTIFICATIONS ==================== */
 .toast-container {
   position: fixed;
   bottom: 24px;
@@ -575,35 +1201,29 @@ body {
 }
 
 .toast {
-  background: #1e293b;
-  color: #fff;
-  border: 1px solid #334155;
-  padding: 10px 18px;
+  background: var(--ink-deep);
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+  padding: 10px 20px;
   border-radius: 24px;
   font-size: 13px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
   animation: toastFadeIn 0.3s ease;
   white-space: nowrap;
 }
 
 @keyframes toastFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Skeleton loader */
 .skeleton {
   background: linear-gradient(
     90deg,
-    var(--skeleton-base) 25%,
-    var(--skeleton-highlight) 50%,
-    var(--skeleton-base) 75%
+    var(--cream-soft) 25%,
+    #dfd7c2 50%,
+    var(--cream-soft) 75%
   );
   background-size: 200% 100%;
   animation: skeletonPulse 1.5s infinite;
@@ -614,7 +1234,20 @@ body {
   100% { background-position: -200% 0; }
 }
 
-/* Sentinel canh cuộn trang */
+.timeline-skeleton {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.skeleton-card {
+  height: 320px;
+  border-radius: var(--radius-md);
+  max-width: 440px;
+  width: 100%;
+  margin: 0 auto;
+}
+
 .scroll-sentinel {
   height: 20px;
   width: 100%;
@@ -622,21 +1255,12 @@ body {
 
 .btn-load-more {
   display: block;
-  margin: 24px auto;
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  color: #fff;
-  padding: 10px 24px;
+  margin: 20px auto;
+  background: var(--ink);
+  color: var(--gold-light);
+  border: 1px solid var(--gold);
+  padding: 8px 22px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 13px;
   cursor: pointer;
-}
-
-/* Ẩn hiện màn hình */
-.view-section {
-  display: none;
-}
-
-.view-section.active {
-  display: block;
 }

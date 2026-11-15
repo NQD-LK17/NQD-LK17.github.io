@@ -2,21 +2,19 @@
  * ==============================================================================
  * BỘ ĐIỀU KHIỂN CHÍNH (APP) — KHO LƯU TRỮ HÌNH ẢNH & SỰ KIỆN LK17
  * ==============================================================================
- * Điều hướng Hash Routing (#/, #/e/<slug>, #/e/<slug>/p/<id>, #/e/<slug>/v/<id>)
- * Hiển thị theo lô (IntersectionObserver), Lightbox vuốt ảnh, Tải ảnh 2 bước.
- * Tuân thủ chuẩn Vanilla JS (ES2018), bảo vệ thao tác "nhấn giữ để lưu".
+ * Giao diện phong cách Tạp chí Ký ức / Scrapbook & Timeline Dòng thời gian
+ * Tích hợp Hash Routing, Modal thư viện ảnh theo lô, Lightbox vuốt cảm ứng & Tải ảnh 2 bước.
  */
 
 (function() {
   "use strict";
 
-  // --- TRẠNG THÁI TOÀN CỤC (STATE) ---
+  // --- TRẠNG THÁI TOÀN CỤC ---
   const state = {
     manifest: null,
-    homeScrollY: 0,
     currentEvent: null,
-    currentTab: "p", // "p" (ảnh) hoặc "v" (video)
-    currentItems: [], // Danh sách item theo tab hiện tại
+    currentTab: "p",
+    currentItems: [],
     renderedCount: 0,
     observer: null,
     lightboxIndex: -1,
@@ -28,19 +26,23 @@
 
   // --- PHẦN TỬ DOM ---
   const dom = {
-    app: document.getElementById("app"),
-    homeView: document.getElementById("home-view"),
-    eventView: document.getElementById("event-view"),
-    siteTitle: document.getElementById("site-title"),
-    siteSubtitle: document.getElementById("site-subtitle"),
-    eventsGrid: document.getElementById("events-grid"),
+    // Images
+    heroImg: document.getElementById("hero-img"),
+    polaroidImg: document.getElementById("polaroid-img"),
+    letterImg: document.getElementById("letter-img"),
+    statMemories: document.getElementById("stat-memories"),
     footerUpdated: document.getElementById("footer-updated"),
     zaloBanner: document.getElementById("zalo-banner"),
     zaloClose: document.getElementById("zalo-close"),
-    // Trang sự kiện
-    btnBack: document.getElementById("btn-back"),
-    eventTitle: document.getElementById("event-title"),
-    eventDate: document.getElementById("event-date"),
+    // Timeline
+    timelineList: document.getElementById("timeline-list"),
+    // Modal Thư viện ảnh sự kiện
+    eventModal: document.getElementById("event-modal"),
+    modalBackdrop: document.getElementById("modal-backdrop"),
+    modalClose: document.getElementById("modal-close"),
+    modalTag: document.getElementById("modal-tag"),
+    modalDate: document.getElementById("modal-date"),
+    modalTitle: document.getElementById("modal-title"),
     tabPhoto: document.getElementById("tab-photo"),
     tabVideo: document.getElementById("tab-video"),
     mediaGrid: document.getElementById("media-grid"),
@@ -54,16 +56,25 @@
     lightboxNext: document.getElementById("lightbox-next"),
     lightboxImg: document.getElementById("lightbox-img"),
     btnDownload: document.getElementById("btn-download"),
-    // Video Overlay
+    // Video
     videoOverlay: document.getElementById("video-overlay"),
     videoContainer: document.getElementById("video-container"),
     videoClose: document.getElementById("video-close"),
     videoDriveLink: document.getElementById("video-drive-link"),
-    // Toasts
     toastContainer: document.getElementById("toast-container")
   };
 
-  // --- 1. KHỞI TẠO HỆ THỐNG ---
+  // Danh ngôn thanh xuân ngẫu nhiên cho các thẻ sự kiện
+  const MEMORY_QUOTES = [
+    "“Từ những người xa lạ, chúng ta đã thành một gia đình.”",
+    "“Đi đâu không quan trọng, miễn là chúng ta đi cùng nhau.”",
+    "“Hóa ra thanh xuân là những ngày ta từng mong trôi qua thật nhanh.”",
+    "“Những ngày bình thường bên nhau hóa ra lại là những ngày đẹp nhất.”",
+    "“Thời gian có thể trôi, nhưng nụ cười của chúng ta ở lại mãi mãi.”",
+    "“Gặp nhau là duyên phận, cùng nhau lớn lên là điều tuyệt vời nhất.”"
+  ];
+
+  // --- 1. KHỞI CHẠY HỆ THỐNG ---
   function init() {
     setupZaloBanner();
     setupEventListeners();
@@ -71,7 +82,6 @@
     loadManifestData();
   }
 
-  // Banner Zalo
   function setupZaloBanner() {
     const isZalo = /Zalo/i.test(navigator.userAgent);
     if (isZalo && dom.zaloBanner) {
@@ -82,90 +92,72 @@
     }
   }
 
-  // Bắt sự kiện
   function setupEventListeners() {
     window.addEventListener("hashchange", handleHashChange);
 
-    // Nút quay lại trang chủ
-    dom.btnBack.addEventListener("click", function() {
-      location.hash = "#/";
-    });
+    // Đóng Modal Thư viện sự kiện
+    dom.modalClose.addEventListener("click", closeModal);
+    dom.modalBackdrop.addEventListener("click", closeModal);
 
-    // Chuyển tab ảnh/video
-    dom.tabPhoto.addEventListener("click", function() {
-      switchTab("p");
-    });
-    dom.tabVideo.addEventListener("click", function() {
-      switchTab("v");
-    });
+    // Chuyển Tab Ảnh / Video trong Modal
+    dom.tabPhoto.addEventListener("click", () => switchTab("p"));
+    dom.tabVideo.addEventListener("click", () => switchTab("v"));
 
-    // Nút Xem thêm khi không hỗ trợ IntersectionObserver
-    dom.btnLoadMore.addEventListener("click", function() {
-      renderNextBatch();
-    });
+    // Nút Xem thêm lô ảnh
+    dom.btnLoadMore.addEventListener("click", renderNextBatch);
 
-    // Đóng Lightbox
+    // Lightbox
     dom.lightboxClose.addEventListener("click", closeLightbox);
+    dom.lightboxPrev.addEventListener("click", () => navigateLightbox(-1));
+    dom.lightboxNext.addEventListener("click", () => navigateLightbox(1));
 
-    // Điều hướng Lightbox máy tính
-    dom.lightboxPrev.addEventListener("click", function() {
-      navigateLightbox(-1);
-    });
-    dom.lightboxNext.addEventListener("click", function() {
-      navigateLightbox(1);
-    });
-
-    // Bàn phím điều hướng Lightbox
+    // Bàn phím điều hướng
     window.addEventListener("keydown", function(e) {
       if (dom.lightbox.style.display === "flex") {
         if (e.key === "ArrowLeft") navigateLightbox(-1);
         if (e.key === "ArrowRight") navigateLightbox(1);
         if (e.key === "Escape") closeLightbox();
+      } else if (dom.eventModal.style.display === "flex") {
+        if (e.key === "Escape") closeModal();
       }
       if (dom.videoOverlay.style.display === "flex") {
         if (e.key === "Escape") closeVideo();
       }
     });
 
-    // Cử chỉ vuốt Lightbox trên điện thoại ({ passive: true } bảo vệ touch/nhấn giữ)
+    // Vuốt màn hình Lightbox ({ passive: true } bảo vệ touch gốc)
     setupLightboxSwipe();
 
-    // Nút Tải ảnh 2 bước
+    // Tải ảnh 2 bước
     dom.btnDownload.addEventListener("click", handleDownloadButtonClick);
 
-    // Đóng khung Video
+    // Đóng video
     dom.videoClose.addEventListener("click", closeVideo);
   }
 
-  // Kiểm tra deep link trực tiếp khi mới vào trang (Mục 4.5 - N4)
   function checkInitialDeepLink() {
     const hash = window.location.hash || "";
-    // Định dạng: #/e/<slug>/p/<id> hoặc #/e/<slug>/v/<id>
     const match = hash.match(/^#\/e\/([^/]+)\/([pv])\/([^/]+)$/);
     if (match) {
       state.isInitialDeepLink = true;
       const slug = match[1];
-      // Thay thế lịch sử hiện tại bằng URL sự kiện trước, để bấm Back không bị thoát web
       history.replaceState(null, "", "#/e/" + slug);
-      // Mở tiếp hash ảnh như mục lịch sử mới
       location.hash = hash;
     }
   }
 
-  // --- 2. TẢI DỮ LIỆU MANIFEST ---
+  // --- 2. TẢI DỮ LIỆU TỪ MANIFEST ---
   function loadManifestData() {
-    // 1. Thử lấy từ cache tĩnh trước
     fetch("data/manifest.json?t=" + Date.now())
-      .then(function(res) {
+      .then(res => {
         if (!res.ok) throw new Error("Static manifest not found");
         return res.json();
       })
-      .then(function(data) {
+      .then(data => {
         applyManifest(data, true);
         checkLiveManifestUpdate(data.generatedAt);
       })
-      .catch(function(err) {
-        // Nếu static lỗi, thử lấy từ API
+      .catch(() => {
         if (window.KY_CONFIG.API_URL) {
           fetchLiveManifest(true);
         } else {
@@ -174,106 +166,167 @@
       });
   }
 
-  // Kiểm tra bản cập nhật mới từ Apps Script ngầm
   function checkLiveManifestUpdate(currentGeneratedAt) {
     if (!window.KY_CONFIG.LIVE_MANIFEST || !window.KY_CONFIG.API_URL) return;
 
     fetch(window.KY_CONFIG.API_URL + "?action=manifest")
-      .then(function(res) { return res.json(); })
-      .then(function(liveData) {
+      .then(res => res.json())
+      .then(liveData => {
         if (liveData && liveData.generatedAt && liveData.generatedAt > currentGeneratedAt) {
-          // Nếu đang ở trang chủ, render lại ngay
           const hash = window.location.hash || "";
-          if (hash === "" || hash === "#/") {
+          if (hash === "" || hash === "#/" || hash === "#top") {
             applyManifest(liveData, false);
           } else {
-            // Đang ở sự kiện hoặc lightbox: chỉ lưu để dùng cho lần điều hướng sau
             state.pendingManifest = liveData;
           }
         }
       })
-      .catch(function() {
-        // Chạy ngầm lỗi thì âm thầm bỏ qua
-      });
+      .catch(() => {});
   }
 
   function fetchLiveManifest(isInitial) {
     fetch(window.KY_CONFIG.API_URL + "?action=manifest")
-      .then(function(res) { return res.json(); })
-      .then(function(data) {
-        applyManifest(data, isInitial);
-      })
-      .catch(function() {
-        showLoadError();
-      });
+      .then(res => res.json())
+      .then(data => applyManifest(data, isInitial))
+      .catch(() => showLoadError());
   }
 
   function showLoadError() {
-    dom.eventsGrid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align: center; padding: 40px 16px;">
+    dom.timelineList.innerHTML = `
+      <div style="text-align: center; padding: 40px 16px; color: var(--gold-light);">
         <p style="font-size: 16px; margin-bottom: 12px; color: #ef4444;">⚠️ Không tải được dữ liệu sự kiện</p>
-        <button id="btn-retry" class="btn-load-more" style="margin: 0 auto;">Thử lại</button>
+        <button id="btn-retry" class="btn-load-more">Thử lại</button>
       </div>
     `;
-    const btnRetry = document.getElementById("btn-retry");
-    if (btnRetry) {
-      btnRetry.addEventListener("click", function() {
-        location.reload();
-      });
-    }
+    const btn = document.getElementById("btn-retry");
+    if (btn) btn.addEventListener("click", () => location.reload());
   }
 
   function applyManifest(data, isInitial) {
     state.manifest = data;
 
-    // Tiêu đề trang
-    if (data.title) {
-      document.title = data.title;
-      dom.siteTitle.textContent = data.title;
-    }
-    if (data.subtitle) {
-      dom.siteSubtitle.textContent = data.subtitle;
-    }
+    // Cập nhật ngày đồng bộ
     if (data.generatedAt) {
       const genDate = new Date(data.generatedAt);
-      dom.footerUpdated.textContent = "Cập nhật: " + formatDateVN(genDate);
+      dom.footerUpdated.textContent = "Dữ liệu được cập nhật ngày: " + formatDateVN(genDate);
     }
 
-    // Render danh sách sự kiện ở trang chủ
-    renderHomeEvents(data.events || []);
+    // Cập nhật số lượng kỷ niệm
+    let totalMedia = 0;
+    (data.events || []).forEach(e => {
+      totalMedia += (e.np || 0) + (e.nv || 0);
+    });
+    if (totalMedia > 0 && dom.statMemories) {
+      dom.statMemories.textContent = `${totalMedia}+`;
+    }
 
-    // Điều hướng theo URL ban đầu
+    // Render Timeline Dòng thời gian
+    renderTimeline(data.events || []);
+
+    // Điều hướng theo URL
     handleHashChange();
   }
 
-  // --- 3. ĐIỀU HƯỚNG ROUTING (Mục 4.5) ---
+  // --- 3. RENDER TIMELINE DÒNG THỜI GIAN THEO PHONG CÁCH FIGMA ---
+  function renderTimeline(events) {
+    dom.timelineList.innerHTML = "";
+
+    if (!events || events.length === 0) {
+      dom.timelineList.innerHTML = `
+        <div style="text-align: center; padding: 40px; color: var(--text-light-sub);">
+          Chưa có sự kiện nào trong dòng thời gian.
+        </div>
+      `;
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    let currentYear = null;
+
+    events.forEach((ev, idx) => {
+      // Trích xuất năm để tạo Year Node nếu sang năm mới
+      const evYear = ev.date ? ev.date.split("-")[0] : "";
+      if (evYear && evYear !== currentYear) {
+        currentYear = evYear;
+        const yearNode = document.createElement("div");
+        yearNode.className = "timeline-year-node";
+        yearNode.textContent = currentYear;
+        frag.appendChild(yearNode);
+      }
+
+      // Vị trí so le: chẵn bên trái, lẻ bên phải
+      const side = idx % 2 === 0 ? "left" : "right";
+      const itemEl = document.createElement("div");
+      itemEl.className = `timeline-item ${side}`;
+
+      const coverSrc = window.KY_MEDIA.thumbUrl(ev.cover, window.KY_CONFIG.COVER_WIDTH);
+      const displayDate = formatDisplayDate(ev.date);
+      const quote = MEMORY_QUOTES[idx % MEMORY_QUOTES.length];
+
+      itemEl.innerHTML = `
+        <div class="timeline-dot"></div>
+        <article class="milestone-card">
+          <div class="milestone-cover-box">
+            <img class="milestone-cover" 
+                 src="${coverSrc}" 
+                 loading="lazy" 
+                 decoding="async" 
+                 referrerpolicy="no-referrer"
+                 alt="${escapeHtml(ev.title)}"
+                 onerror="window.KY_MEDIA.handleImgError(this, '${ev.cover}', ${window.KY_CONFIG.COVER_WIDTH})">
+            <div class="milestone-photo-badge">
+              <span>📷 ${ev.np || 0} ảnh${ev.nv ? " · " + ev.nv + " video" : ""}</span>
+            </div>
+          </div>
+          <div class="milestone-body">
+            <div class="milestone-tag-row">
+              <span>Kỷ niệm</span>
+              <span class="milestone-dot-sep">·</span>
+              <span>${displayDate}</span>
+            </div>
+            <h3 class="milestone-title">${escapeHtml(ev.title)}</h3>
+            <div class="milestone-quote">${quote}</div>
+            <a href="#/e/${ev.slug}" class="milestone-btn">
+              <span>Xem thêm ảnh</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </article>
+      `;
+
+      frag.appendChild(itemEl);
+    });
+
+    dom.timelineList.appendChild(frag);
+  }
+
+  // --- 4. ĐIỀU HƯỚNG ROUTING (Hash) ---
   function handleHashChange() {
     if (!state.manifest) return;
 
-    // Nếu có bản manifest mới đang chờ và vừa quay về trang chủ
-    if (state.pendingManifest && (location.hash === "" || location.hash === "#/")) {
+    if (state.pendingManifest && (location.hash === "" || location.hash === "#/" || location.hash === "#top")) {
       state.manifest = state.pendingManifest;
       state.pendingManifest = null;
-      renderHomeEvents(state.manifest.events || []);
+      renderTimeline(state.manifest.events || []);
     }
 
     const hash = window.location.hash || "#/";
 
-    // 1. Trang chủ (#/ hoặc rỗng)
-    if (hash === "" || hash === "#/") {
-      showHomeView();
+    // 1. Màn hình chính Timeline
+    if (hash === "" || hash === "#/" || hash === "#top" || hash.startsWith("#our-story") || hash.startsWith("#timeline") || hash.startsWith("#letter")) {
+      closeModalView();
       return;
     }
 
-    // 2. Trang sự kiện (#/e/<slug>)
+    // 2. Mở Modal Sự kiện (#/e/<slug>)
     const eventMatch = hash.match(/^#\/e\/([^/]+)$/);
     if (eventMatch) {
       const slug = eventMatch[1];
-      showEventView(slug);
+      openEventModal(slug);
       return;
     }
 
-    // 3. Xem ảnh Lightbox (#/e/<slug>/p/<fileId>)
+    // 3. Mở Lightbox ảnh (#/e/<slug>/p/<fileId>)
     const photoMatch = hash.match(/^#\/e\/([^/]+)\/p\/([^/]+)$/);
     if (photoMatch) {
       const slug = photoMatch[1];
@@ -282,7 +335,7 @@
       return;
     }
 
-    // 4. Xem video (#/e/<slug>/v/<fileId>)
+    // 4. Mở Video (#/e/<slug>/v/<fileId>)
     const videoMatch = hash.match(/^#\/e\/([^/]+)\/v\/([^/]+)$/);
     if (videoMatch) {
       const slug = videoMatch[1];
@@ -291,73 +344,12 @@
       return;
     }
 
-    // Hash lạ hoặc không tồn tại: về trang chủ
-    showToast("Đường dẫn không hợp lệ");
+    showToast("Đường dẫn không tồn tại");
     location.hash = "#/";
   }
 
-  // --- 4. GIAO DIỆN TRANG CHỦ ---
-  function renderHomeEvents(events) {
-    dom.eventsGrid.innerHTML = "";
-
-    if (!events || events.length === 0) {
-      dom.eventsGrid.innerHTML = `
-        <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: var(--text-sub);">
-          Chưa có sự kiện nào được ghi nhận.
-        </div>
-      `;
-      return;
-    }
-
-    const frag = document.createDocumentFragment();
-    events.forEach(function(ev) {
-      const card = document.createElement("a");
-      card.className = "event-card";
-      card.href = "#/e/" + ev.slug;
-
-      const coverSrc = window.KY_MEDIA.thumbUrl(ev.cover, window.KY_CONFIG.COVER_WIDTH);
-
-      card.innerHTML = `
-        <div class="event-cover-wrapper">
-          <img class="event-cover" 
-               src="${coverSrc}" 
-               loading="lazy" 
-               decoding="async" 
-               referrerpolicy="no-referrer"
-               alt="${escapeHtml(ev.title)}"
-               onerror="window.KY_MEDIA.handleImgError(this, '${ev.cover}', ${window.KY_CONFIG.COVER_WIDTH})">
-        </div>
-        <div class="event-info">
-          <h3 class="event-title">${escapeHtml(ev.title)}</h3>
-          <div class="event-meta">
-            <span>${formatDisplayDate(ev.date)}</span>
-            <span>${ev.np || 0} ảnh${ev.nv ? " · " + ev.nv + " video" : ""}</span>
-          </div>
-        </div>
-      `;
-      frag.appendChild(card);
-    });
-
-    dom.eventsGrid.appendChild(frag);
-  }
-
-  function showHomeView() {
-    // Đóng mọi overlay
-    dom.lightbox.style.display = "none";
-    dom.videoOverlay.style.display = "none";
-    dom.videoContainer.innerHTML = "";
-
-    dom.eventView.classList.remove("active");
-    dom.homeView.classList.add("active");
-
-    // Khôi phục vị trí cuộn trang chủ cũ (N6)
-    if (state.homeScrollY > 0) {
-      window.scrollTo(0, state.homeScrollY);
-    }
-  }
-
-  // --- 5. GIAO DIỆN TRANG SỰ KIỆN ---
-  function showEventView(slug) {
+  // --- 5. GIAO DIỆN MODAL SỰ KIỆN ---
+  function openEventModal(slug) {
     const event = findEventBySlug(slug);
     if (!event) {
       showToast("Không tìm thấy sự kiện");
@@ -365,45 +357,44 @@
       return;
     }
 
-    // Đóng overlay nếu có
+    // Đóng các overlay xem ảnh/video nếu có
     dom.lightbox.style.display = "none";
     dom.videoOverlay.style.display = "none";
     dom.videoContainer.innerHTML = "";
 
-    // Lưu vị trí cuộn trang chủ nếu vừa từ trang chủ vào
-    if (dom.homeView.classList.contains("active")) {
-      state.homeScrollY = window.scrollY;
-    }
+    state.currentEvent = event;
+    state.hasNavigatedInternally = true;
 
-    dom.homeView.classList.remove("active");
-    dom.eventView.classList.add("active");
+    // Điền tiêu đề & ngày
+    dom.modalTitle.textContent = event.title;
+    dom.modalDate.textContent = formatDisplayDate(event.date);
 
-    // Nếu chuyển sang sự kiện mới, reset lưới và vị trí cuộn
-    if (!state.currentEvent || state.currentEvent.slug !== slug) {
-      state.currentEvent = event;
-      state.hasNavigatedInternally = true;
-      window.scrollTo(0, 0);
-
-      dom.eventTitle.textContent = event.title;
-      dom.eventDate.textContent = formatDisplayDate(event.date);
-
-      // Cập nhật tab
-      setupEventTabs(event);
-      switchTab(event.np > 0 ? "p" : "v", true);
-    }
-  }
-
-  function setupEventTabs(event) {
+    // Cập nhật tab
     const np = event.np || 0;
     const nv = event.nv || 0;
-
-    // Cập nhật text số lượng
     dom.tabPhoto.textContent = `Ảnh (${np})`;
     dom.tabVideo.textContent = `Video (${nv})`;
-
-    // Tab nào có 0 mục thì ẩn đi
     dom.tabPhoto.style.display = np > 0 ? "block" : "none";
     dom.tabVideo.style.display = nv > 0 ? "block" : "none";
+
+    switchTab(np > 0 ? "p" : "v", true);
+
+    // Hiện modal
+    dom.eventModal.style.display = "flex";
+    document.body.style.overflow = "hidden"; // Khóa cuộn trang nền
+  }
+
+  function closeModal() {
+    closeModalView();
+    location.hash = "#timeline";
+  }
+
+  function closeModalView() {
+    dom.eventModal.style.display = "none";
+    dom.lightbox.style.display = "none";
+    dom.videoOverlay.style.display = "none";
+    dom.videoContainer.innerHTML = "";
+    document.body.style.overflow = ""; // Khôi phục cuộn trang nền
   }
 
   function switchTab(tabType, force) {
@@ -420,14 +411,12 @@
       state.currentItems = (state.currentEvent.items || []).filter(item => item.t === "v");
     }
 
-    // Reset lưới và render lô đầu tiên
     dom.mediaGrid.innerHTML = "";
     state.renderedCount = 0;
     renderNextBatch();
     setupIntersectionObserver();
   }
 
-  // Hiển thị theo lô BATCH_SIZE (Mục 4.7)
   function renderNextBatch() {
     const items = state.currentItems;
     const total = items.length;
@@ -439,43 +428,44 @@
     const nextBatch = items.slice(state.renderedCount, state.renderedCount + window.KY_CONFIG.BATCH_SIZE);
     const frag = document.createDocumentFragment();
 
-    nextBatch.forEach(function(item, idx) {
+    nextBatch.forEach((item, idx) => {
       const globalIndex = state.renderedCount + idx;
       const el = document.createElement("div");
-      el.className = "grid-item";
+      el.className = "gallery-item";
 
       const thumb = window.KY_MEDIA.thumbUrl(item.id, window.KY_CONFIG.GRID_WIDTH);
 
       if (item.t === "p") {
         el.innerHTML = `
-          <img class="grid-img" 
+          <img class="gallery-img" 
                src="${thumb}" 
                loading="lazy" 
                decoding="async" 
                referrerpolicy="no-referrer"
                alt="Ảnh ${globalIndex + 1} – ${escapeHtml(state.currentEvent.title)}"
                onerror="window.KY_MEDIA.handleImgError(this, '${item.id}', ${window.KY_CONFIG.GRID_WIDTH})">
+          <div class="gallery-item-index">${String(globalIndex + 1).padStart(2, "0")}</div>
         `;
-        el.addEventListener("click", function() {
+        el.addEventListener("click", () => {
           location.hash = "#/e/" + state.currentEvent.slug + "/p/" + item.id;
         });
       } else {
-        // Video
         const durText = item.d ? formatVideoDuration(item.d) : "";
         el.innerHTML = `
-          <img class="grid-img" 
+          <img class="gallery-img" 
                src="${thumb}" 
                loading="lazy" 
                decoding="async" 
                referrerpolicy="no-referrer"
                alt="Video ${globalIndex + 1} – ${escapeHtml(state.currentEvent.title)}"
                onerror="window.KY_MEDIA.handleImgError(this, '${item.id}', ${window.KY_CONFIG.GRID_WIDTH})">
+          <div class="gallery-item-index">${String(globalIndex + 1).padStart(2, "0")}</div>
           <div class="video-badge">
             <div class="video-play-icon">▶</div>
             ${durText ? `<span class="video-duration">${durText}</span>` : ""}
           </div>
         `;
-        el.addEventListener("click", function() {
+        el.addEventListener("click", () => {
           location.hash = "#/e/" + state.currentEvent.slug + "/v/" + item.id;
         });
       }
@@ -486,7 +476,6 @@
     dom.mediaGrid.appendChild(frag);
     state.renderedCount += nextBatch.length;
 
-    // Ẩn sentinel/nút load more nếu đã hết
     if (state.renderedCount >= total) {
       dom.btnLoadMore.style.display = "none";
       if (dom.sentinel) dom.sentinel.style.display = "none";
@@ -495,33 +484,26 @@
     }
   }
 
-  // Cuộn vô tận với IntersectionObserver (rootMargin 800px)
   function setupIntersectionObserver() {
-    if (state.observer) {
-      state.observer.disconnect();
-    }
+    if (state.observer) state.observer.disconnect();
 
     if ("IntersectionObserver" in window) {
       dom.btnLoadMore.style.display = "none";
-      state.observer = new IntersectionObserver(function(entries) {
+      state.observer = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting) {
           renderNextBatch();
         }
-      }, {
-        rootMargin: "800px"
-      });
+      }, { rootMargin: "800px" });
       state.observer.observe(dom.sentinel);
     } else {
-      // Trình duyệt cũ không hỗ trợ
       dom.btnLoadMore.style.display = "block";
     }
   }
 
-  // --- 6. LIGHTBOX ẢNH & BẢO VỆ NHẤN GIỮ (Mục 4.8) ---
+  // --- 6. LIGHTBOX ẢNH & BẢO VỆ NHẤN GIỮ ---
   function openLightboxBySlugAndId(slug, fileId) {
-    // Đảm bảo trang sự kiện nền đang được dựng sẵn bên dưới
     if (!state.currentEvent || state.currentEvent.slug !== slug) {
-      showEventView(slug);
+      openEventModal(slug);
     }
 
     const photos = (state.currentEvent.items || []).filter(item => item.t === "p");
@@ -542,34 +524,29 @@
     const item = photos[index];
     const total = photos.length;
 
-    // Cập nhật bộ đếm
     dom.lightboxCounter.textContent = `${index + 1} / ${total}`;
-
-    // Reset nút tải ảnh
     resetDownloadButton();
 
-    // Hiện ảnh GRID_WIDTH trước (đã có trong cache), sau đó đổi sang LARGE_WIDTH khi tải xong
     const lowResUrl = window.KY_MEDIA.thumbUrl(item.id, window.KY_CONFIG.GRID_WIDTH);
     const highResUrl = window.KY_MEDIA.thumbUrl(item.id, window.KY_CONFIG.LARGE_WIDTH);
 
     dom.lightboxImg.src = lowResUrl;
     dom.lightboxImg.alt = `Ảnh ${index + 1} – ${state.currentEvent.title}`;
-    dom.lightboxImg.onerror = function() {
+    dom.lightboxImg.onerror = () => {
       window.KY_MEDIA.handleImgError(dom.lightboxImg, item.id, window.KY_CONFIG.LARGE_WIDTH);
     };
 
-    // Tải ảnh lớn
     const fullImg = new Image();
     fullImg.referrerPolicy = "no-referrer";
     fullImg.decoding = "async";
-    fullImg.onload = function() {
+    fullImg.onload = () => {
       if (state.lightboxIndex === index) {
         dom.lightboxImg.src = highResUrl;
       }
     };
     fullImg.src = highResUrl;
 
-    // Tải trước (prefetch) ảnh lớn của ảnh liền trước và ảnh kế tiếp
+    // Prefetch ảnh trước & sau
     if (index + 1 < total) {
       const nextImg = new Image();
       nextImg.referrerPolicy = "no-referrer";
@@ -585,21 +562,15 @@
   function navigateLightbox(step) {
     const photos = (state.currentEvent.items || []).filter(item => item.t === "p");
     const newIndex = state.lightboxIndex + step;
-
     if (newIndex < 0 || newIndex >= photos.length) return;
 
     state.lightboxIndex = newIndex;
     const targetItem = photos[newIndex];
-
-    // Thay đổi hash bằng replaceState để không tạo lịch sử rác khi lướt ảnh (Mục 4.5 - N2)
-    const newHash = "#/e/" + state.currentEvent.slug + "/p/" + targetItem.id;
-    history.replaceState(null, "", newHash);
-
+    history.replaceState(null, "", "#/e/" + state.currentEvent.slug + "/p/" + targetItem.id);
     renderLightboxPhoto(newIndex, photos);
   }
 
   function closeLightbox() {
-    // Đóng lightbox (Mục 4.5 - N3)
     if (state.hasNavigatedInternally && window.history.length > 1) {
       history.back();
     } else {
@@ -607,37 +578,31 @@
     }
   }
 
-  // Cử chỉ vuốt ngang Lightbox
   function setupLightboxSwipe() {
     let touchStartX = 0;
     let touchStartY = 0;
 
-    // Đăng ký passive: true để tuyệt đối không chặn tương tác chạm gốc và contextmenu lưu ảnh
-    dom.lightbox.addEventListener("touchstart", function(e) {
+    dom.lightbox.addEventListener("touchstart", e => {
       if (e.touches.length === 1) {
         touchStartX = e.touches[0].clientX;
         touchStartY = e.touches[0].clientY;
       }
     }, { passive: true });
 
-    dom.lightbox.addEventListener("touchend", function(e) {
+    dom.lightbox.addEventListener("touchend", e => {
       if (e.changedTouches.length === 1) {
         const deltaX = e.changedTouches[0].clientX - touchStartX;
         const deltaY = e.changedTouches[0].clientY - touchStartY;
 
-        // Ngưỡng vuốt ngang 50px và góc lệch không quá dốc
         if (Math.abs(deltaX) > 50 && Math.abs(deltaX) > Math.abs(deltaY) * 1.5) {
-          if (deltaX < 0) {
-            navigateLightbox(1); // Vuốt sang trái -> Ảnh sau
-          } else {
-            navigateLightbox(-1); // Vuốt sang phải -> Ảnh trước
-          }
+          if (deltaX < 0) navigateLightbox(1);
+          else navigateLightbox(-1);
         }
       }
     }, { passive: true });
   }
 
-  // --- 7. NÚT TẢI ẢNH 2 BƯỚC (Mục 4.9) ---
+  // --- 7. NÚT TẢI ẢNH 2 BƯỚC ---
   function resetDownloadButton() {
     state.lightboxFileBlob = null;
     state.lightboxFileName = "";
@@ -651,13 +616,11 @@
     const item = photos[state.lightboxIndex];
     if (!item) return;
 
-    // Bước 2: Khi đã chuẩn bị xong file -> Lưu vào máy
     if (state.lightboxFileBlob) {
       triggerSaveFile(state.lightboxFileBlob, state.lightboxFileName);
       return;
     }
 
-    // Bước 1: Chuẩn bị file từ Apps Script API
     if (!window.KY_CONFIG.API_URL) {
       showToast("Không tải tự động được. Hãy nhấn giữ ảnh để lưu.");
       return;
@@ -666,32 +629,24 @@
     dom.btnDownload.disabled = true;
     dom.btnDownload.innerHTML = `<span>⏳ Đang chuẩn bị…</span>`;
 
-    // Gọi API với timeout 30 giây
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-    const downloadUrl = window.KY_CONFIG.API_URL + "?action=download&id=" + item.id;
-    fetch(downloadUrl, { signal: controller.signal })
-      .then(function(res) {
+    fetch(window.KY_CONFIG.API_URL + "?action=download&id=" + item.id, { signal: controller.signal })
+      .then(res => {
         clearTimeout(timeoutId);
         return res.json();
       })
-      .then(function(data) {
-        if (!data || !data.ok) {
-          throw new Error((data && data.msg) || "Lỗi tải ảnh");
-        }
-
-        // Chuyển base64 thành Blob
-        const blob = b64toBlob(data.b64, data.mime || "image/jpeg");
-        state.lightboxFileBlob = blob;
+      .then(data => {
+        if (!data || !data.ok) throw new Error();
+        state.lightboxFileBlob = b64toBlob(data.b64, data.mime || "image/jpeg");
         state.lightboxFileName = data.name || `photo_${item.id}.jpg`;
 
-        // Đổi nút thành "Lưu vào máy"
         dom.btnDownload.disabled = false;
         dom.btnDownload.classList.add("is-ready");
         dom.btnDownload.innerHTML = `<span>💾 Lưu vào máy</span>`;
       })
-      .catch(function(err) {
+      .catch(() => {
         dom.btnDownload.disabled = false;
         dom.btnDownload.innerHTML = `<span>⬇️ Tải ảnh</span>`;
         showToast("Không tải tự động được. Hãy nhấn giữ ảnh để lưu.");
@@ -701,20 +656,12 @@
   function triggerSaveFile(blob, filename) {
     try {
       const file = new File([blob], filename, { type: blob.type });
-
-      // iOS Web Share API
       if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        navigator.share({
-          files: [file],
-          title: filename
-        }).catch(function(err) {
-          // Bỏ qua nếu người dùng tự bấm Hủy (AbortError)
-          if (err.name !== "AbortError") {
-            downloadViaLink(blob, filename);
-          }
-        });
+        navigator.share({ files: [file], title: filename })
+          .catch(err => {
+            if (err.name !== "AbortError") downloadViaLink(blob, filename);
+          });
       } else {
-        // Trình duyệt máy tính hoặc Android không hỗ trợ canShare
         downloadViaLink(blob, filename);
       }
     } catch (e) {
@@ -733,10 +680,10 @@
     setTimeout(() => URL.revokeObjectURL(url), 60000);
   }
 
-  // --- 8. XEM VIDEO (Mục 4.10) ---
+  // --- 8. VIDEO OVERLAY ---
   function openVideoBySlugAndId(slug, fileId) {
     if (!state.currentEvent || state.currentEvent.slug !== slug) {
-      showEventView(slug);
+      openEventModal(slug);
     }
 
     const videos = (state.currentEvent.items || []).filter(item => item.t === "v");
@@ -747,27 +694,20 @@
       return;
     }
 
-    const embedUrl = window.KY_MEDIA.videoEmbed(video.id);
-    const openUrl = window.KY_MEDIA.videoOpen(video.id);
-
-    // Chèn iframe phát trực tiếp
     dom.videoContainer.innerHTML = `
       <iframe class="video-iframe" 
-              src="${embedUrl}" 
+              src="${window.KY_MEDIA.videoEmbed(video.id)}" 
               allow="autoplay; fullscreen" 
               allowfullscreen>
       </iframe>
     `;
-
-    dom.videoDriveLink.href = openUrl;
+    dom.videoDriveLink.href = window.KY_MEDIA.videoOpen(video.id);
     dom.videoOverlay.style.display = "flex";
   }
 
   function closeVideo() {
-    // Xóa iframe khỏi DOM để tắt tiếng và dừng video ngay lập tức (Mục 4.10)
     dom.videoContainer.innerHTML = "";
     dom.videoOverlay.style.display = "none";
-
     if (state.hasNavigatedInternally && window.history.length > 1) {
       history.back();
     } else {
@@ -775,7 +715,7 @@
     }
   }
 
-  // --- 9. HÀM TIỆN ÍCH HỖ TRỢ ---
+  // --- 9. HÀM TIỆN ÍCH ---
   function findEventBySlug(slug) {
     if (!state.manifest || !state.manifest.events) return null;
     return state.manifest.events.find(ev => ev.slug === slug);
@@ -784,9 +724,7 @@
   function formatDisplayDate(dateStr) {
     if (!dateStr) return "";
     const parts = dateStr.split("-");
-    if (parts.length === 3) {
-      return `${parts[2]}/${parts[1]}/${parts[0]}`;
-    }
+    if (parts.length === 3) return `${parts[2]}.${parts[1]}.${parts[0]}`;
     return dateStr;
   }
 
@@ -825,28 +763,24 @@
       for (let i = 0; i < slice.length; i++) {
         byteNumbers[i] = slice.charCodeAt(i);
       }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
+      byteArrays.push(new Uint8Array(byteNumbers));
     }
     return new Blob(byteArrays, { type: contentType });
   }
 
-  // Toast thông báo tự ẩn sau 4 giây (không dùng alert())
   function showToast(message) {
     const toast = document.createElement("div");
     toast.className = "toast";
     toast.textContent = message;
     dom.toastContainer.appendChild(toast);
 
-    setTimeout(function() {
-      toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+    setTimeout(() => {
       toast.style.opacity = "0";
       toast.style.transform = "translateY(10px)";
       setTimeout(() => toast.remove(), 300);
     }, 4000);
   }
 
-  // Khởi động ứng dụng khi DOM sẵn sàng
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", init);
   } else {
