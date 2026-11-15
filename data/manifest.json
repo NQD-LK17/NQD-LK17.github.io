@@ -1,0 +1,308 @@
+{
+  "v": 1,
+  "generatedAt": "2026-11-15T13:21:40.335Z",
+  "title": "LK17 — Lưu Trữ Sự Kiện & Hình Ảnh",
+  "subtitle": "Kho lưu trữ hình ảnh & video 3 năm cấp 3 · THPT Chuyên Nguyễn Quang Diêu",
+  "events": [
+    {
+      "slug": "2026-10-20-phu-nu",
+      "date": "2026-10-20",
+      "title": "phụ nữ",
+      "cover": "11veC0FbWv2KePvANOqCY5MXjxXIvhHvP",
+      "np": 12,
+      "nv": 0,
+      "items": [
+        {
+          "id": "11veC0FbWv2KePvANOqCY5MXjxXIvhHvP",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1_1CLngSybfqZrx17trUlhT31ji3ASLOK",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1Qo0OEn-CsREC5-ARDxrnDRKOQ-ydeTeM",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1bQWshz59RxEUiXld91-IYkWSwuT2-WZS",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1NvUIOwzxyvpPzUeJE34wUJy6bDeyanrG",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1_TPoIH3QZQLllNggOXOmz8VzAdOqtRJu",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "16mVEMUDODLSEO_dH3yxelgoQ8-T4k0qM",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "10vpVMkCUu7O0tVph_l7tBxUn7mf3Vk5r",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1C_YKggWZ-eZAUDQfzbafA_m1kGyY9HOw",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1yIRG3SkJOLgluAbuenfVB-746IPSMHWO",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1bpXzuSOvjHos2n5YudWo8eo0nYQApbOX",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1xapp_gK75pNqeZuYioji9aOp2fGNitZA",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        }
+      ]
+    },
+    {
+      "slug": "2026-11-19-phu-nam",
+      "date": "2026-11-19",
+      "title": "phụ nam",
+      "cover": "1fM8Pway_h6yozKeZVEdIeHysssl6DLHN",
+      "np": 12,
+      "nv": 0,
+      "items": [
+        {
+          "id": "1fM8Pway_h6yozKeZVEdIeHysssl6DLHN",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1mTisqWeXPEjYM8icemlaf6LYouKK9oMX",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1d677j5AKY3Mgs2D0xsPa1zRbHpI01UWA",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1YSicU9WUiTCJhCALxGeNSsr8jv-KI4TI",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1uAcccsdWAilX3DHhDfZlryX9AqdxpZYc",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "17R3LkhqH6-ZmM26MEjttS0QnkbYKVCup",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1wzGK_RSvfDv_e9SsTMgLEgg6exqI5Rjn",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1MI71rQFG2u2Q8WpmRQ1ZWfRjT1TKKioB",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1OwLCan351B_L7_84cT181J1SYQy3PGwf",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1ZrbLB0ODhMsUicuf5w0bhQUtZ2lgkZ2k",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1Uc3dnvAc7ZPNKfrDH_POCved9VVjAG9k",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1QARioppWPgWwuvrS4GkN28qE_0ZEkCar",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        }
+      ]
+    },
+    {
+      "slug": "2026-11-20-nha-giao",
+      "date": "2026-11-20",
+      "title": "nhà giáo",
+      "cover": "1FF10rEqD3OCShxIC-sokCAJSJgpC_eTB",
+      "np": 21,
+      "nv": 0,
+      "items": [
+        {
+          "id": "1FF10rEqD3OCShxIC-sokCAJSJgpC_eTB",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1YjkMReq6_62L3sYROFHKpCHUH-pFMcOn",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1a5yD0KusbhRTLgtdWCi8YhZRHOsQyOET",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1rY1lu-XBsbC31QyhDzsNcwAzNFP4Tw5R",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1BYX_FIFC41K5qWOhDpNhG3mjfBZbXLo1",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1Vc62r7yv73H1EJYxVh6BJUeaiklTIf83",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "18coloS0ziW38U5wxpSCXME_BTTzX39ke",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1_LLFyvoPa0_zhej2ubrkuj9Bq3R0Nugv",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1K6yF3Y6Fs1yVpF9FUFkAvk7qAOLAGr2d",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1wecnjOSmCboPwz7RIiJvUDH-wGA7FDUL",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1_GMEgkYxuNeRzoNqw9Kh5FqEVkCYdqix",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1_pgzeXQZp6h3JQHA9w9j11fVWFDTDGLj",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1sL1NrI21br3pTU8KhJlKrSB_6593I5zk",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1MnJnNDIogdb-qlWefrInqVKS3xw8tdyS",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1gRY1-DonaWZv--SA-w2zCLMQ7PZI8dM3",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1BgMFp3RWzEuDNHUgToV6BD0IhT22aSFq",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1Vs4IzNf19gYyR_0x01xO4HZ4OAtEzJGH",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1oAO7BWrmcqUZkvVJdOGaXiSe7mS-lKgn",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1erHfpyG7ok3ZYcTn3I7564ckPZq-yhu1",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "14ya_4LSxLIRcyxBbn3fHKnXR2UUhY4El",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        },
+        {
+          "id": "1Zt6Eh1oUq6aPNgVuJ4mLb6yarBEkYylD",
+          "t": "p",
+          "w": 4752,
+          "h": 3168
+        }
+      ]
+    }
+  ]
+}
