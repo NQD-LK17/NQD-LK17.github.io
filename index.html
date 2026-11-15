@@ -1,257 +1,131 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#173c3a">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kỷ yếu điện tử · Lớp 12A1 — Ba năm. Một thanh xuân.</title>
+    
+    <meta name="description" content="Một cuộn phim nhỏ về những ngày chúng ta đã cùng nhau lớn lên.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="assets/favicon.png">
 
-  <title>LK17 — Ba năm. Một thanh xuân.</title>
-  <meta name="description" content="Một cuộn phim nhỏ về những ngày chúng ta đã cùng nhau lớn lên · THPT Chuyên Nguyễn Quang Diêu">
+    <!-- CSS gốc từ Figma prototype -->
+    <link rel="stylesheet" href="css/style.css?v=3">
+  </head>
+  <body>
+    <!-- Thanh tiến trình cuộn trang -->
+    <div class="scroll-progress" id="scroll-progress" style="transform: scaleX(0);"></div>
 
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://nqd-lk17.github.io/">
-  <meta property="og:title" content="LK17 — Ba năm. Một thanh xuân.">
-  <meta property="og:description" content="Một cuộn phim nhỏ về những ngày chúng ta đã cùng nhau lớn lên · THPT Chuyên Nguyễn Quang Diêu">
-  <meta property="og:image" content="https://nqd-lk17.github.io/assets/og.jpg">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="assets/favicon.png">
-
-  <!-- Google Fonts: DM Serif Display & Be Vietnam Pro -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
-
-  <!-- Stylesheet -->
-  <link rel="stylesheet" href="css/style.css?v=2">
-</head>
-<body id="top">
-
-  <!-- Zalo Alert Banner -->
-  <div id="zalo-banner" class="zalo-banner" style="display: none;">
-    <div class="zalo-banner-text">
-      Bạn đang xem trong Zalo. Để xem ảnh mượt và tải dễ hơn: bấm <strong>•••</strong> góc trên ➔ <strong>Mở bằng trình duyệt</strong>.
-    </div>
-    <button id="zalo-close" class="zalo-banner-close" aria-label="Đóng">✕</button>
-  </div>
-
-  <!-- ==================== 1. STICKY NAVBAR ==================== -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="#top" class="nav-brand">
-        <span class="brand-title">LK17</span>
-        <span class="brand-dot">·</span>
-        <span class="brand-sub">Chúng ta</span>
-      </a>
-      <nav class="nav-menu">
-        <a href="#our-story" class="nav-link">Câu chuyện</a>
-        <a href="#timeline" class="nav-link">Hành trình</a>
-        <a href="#letter" class="nav-link">Lời nhắn</a>
+    <!-- Header điều hướng -->
+    <header class="site-header">
+      <a class="brand" href="#top">12A1<span>—</span>Chúng ta</a>
+      <nav>
+        <a href="#our-story">Câu chuyện</a>
+        <a href="#timeline">Hành trình</a>
+        <a href="#letter">Lời nhắn</a>
       </nav>
-      <div class="nav-badge">2024 — 2027</div>
-    </div>
-  </header>
-
-  <!-- ==================== 2. HERO SECTION ==================== -->
-  <section class="hero-section">
-    <div class="hero-content">
-      <div class="hero-eyebrow">Hành trình lớp · LK17</div>
-      <h1 class="hero-title">Ba năm.<br>Một thanh xuân.</h1>
-      <p class="hero-subtitle">Một cuộn phim nhỏ về những ngày chúng ta đã cùng nhau lớn lên.</p>
-      
-      <div class="hero-frame-wrap">
-        <div class="hero-frame">
-          <img id="hero-img" class="hero-img" src="assets/classroom.jpg" alt="LK17 - Khoảnh khắc lớp" loading="eager">
-          <div class="hero-frame-caption">“Tất cả chúng ta, dưới cùng một mái trường.”</div>
-        </div>
-      </div>
-
-      <a href="#our-story" class="hero-scroll-btn">
-        <span>Cuộn để bắt đầu</span>
-        <span class="arrow-down">↓</span>
-      </a>
-    </div>
-  </section>
-
-  <!-- ==================== 3. OUR STORY SECTION ==================== -->
-  <section id="our-story" class="story-section">
-    <div class="container story-container">
-      <div class="story-watermark">03</div>
-      
-      <div class="story-header">
-        <div class="section-eyebrow">Chúng ta của những năm ấy</div>
-        <h2 class="section-heading">Có một nơi gọi là <em>thanh xuân</em></h2>
-        <p class="story-desc">
-          Ba năm không quá dài, nhưng đủ để những người xa lạ trở thành một phần ký ức không thể thay thế của nhau.
-        </p>
-      </div>
-
-      <!-- Stats Grid -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-number" id="stat-students">LK17</div>
-          <div class="stat-label">tập thể lớp</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number">1.095</div>
-          <div class="stat-label">ngày bên nhau</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-number" id="stat-memories">∞</div>
-          <div class="stat-label">kỷ niệm đong đầy</div>
-        </div>
-      </div>
-
-      <!-- Polaroid Card -->
-      <div class="polaroid-wrapper">
-        <div class="polaroid-card">
-          <div class="polaroid-tape"></div>
-          <div class="polaroid-img-box">
-            <img id="polaroid-img" src="assets/friends.jpg" alt="Tập thể LK17" loading="lazy">
-          </div>
-          <div class="polaroid-caption">“Gặp nhau là một điều may mắn.”</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== 4. TIMELINE SECTION (HÀNH TRÌNH) ==================== -->
-  <section id="timeline" class="timeline-section">
-    <div class="container">
-      <div class="timeline-header">
-        <div class="section-eyebrow eyebrow-gold">Hành trình của chúng ta</div>
-        <h2 class="section-heading heading-light">Những cột mốc nhỏ, những ký ức thật lớn.</h2>
-        <p class="timeline-intro">
-          Từng sự kiện, từng ngày lễ, từng nụ cười được xếp lại dọc theo dòng thời gian.
-        </p>
-      </div>
-
-      <!-- Timeline Spine & Cards Container -->
-      <div class="timeline-container">
-        <div class="timeline-line"></div>
-        <div id="timeline-list" class="timeline-list">
-          <!-- Cards được render tự động từ manifest.json -->
-          <div class="timeline-skeleton">
-            <div class="skeleton-card skeleton"></div>
-            <div class="skeleton-card skeleton"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== 5. LETTER SECTION (LỜI NHẮN) ==================== -->
-  <section id="letter" class="letter-section">
-    <div class="container letter-container">
-      <div class="letter-grid">
-        <div class="letter-photo-col">
-          <div class="vintage-frame">
-            <img id="letter-img" src="assets/graduation.jpg" alt="Tập thể LK17" loading="lazy">
-          </div>
-        </div>
-        <div class="letter-content-col">
-          <div class="letter-paper">
-            <div class="section-eyebrow">Gửi chúng ta của mai sau</div>
-            <h2 class="letter-title">Đừng quên nhé, chúng ta đã từng rực rỡ như thế.</h2>
-            <div class="letter-body">
-              <p>
-                Mai này, khi mỗi người đã đi trên một con đường riêng, mong rằng chỉ cần vô tình nghe lại một bài hát cũ, nhìn thấy màu áo trắng, hay đi ngang qua sân trường, chúng ta vẫn sẽ mỉm cười vì đã có nhau trong những năm tháng đẹp nhất.
-              </p>
-              <p class="letter-sign">— Tập thể LK17</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ==================== 6. FOOTER ==================== -->
-  <footer class="vintage-footer">
-    <div class="footer-container">
-      <div class="footer-title">LK17 · Một thời để nhớ</div>
-      <div class="footer-sub">THPT Chuyên Nguyễn Quang Diêu · Niên khóa 2024 — 2027</div>
-      <div class="footer-updated" id="footer-updated">Đang cập nhật dữ liệu…</div>
-      <a href="#top" class="footer-back-top">Về đầu trang ↑</a>
-    </div>
-  </footer>
-
-  <!-- ==================== 7. EVENT GALLERY MODAL ==================== -->
-  <div id="event-modal" class="event-modal" style="display: none;">
-    <div class="modal-backdrop" id="modal-backdrop"></div>
-    <div class="modal-dialog">
-      <header class="modal-header">
-        <div class="modal-header-info">
-          <div class="modal-tag-row">
-            <span class="modal-badge-tag" id="modal-tag">Sự kiện</span>
-            <span class="modal-dot">·</span>
-            <span class="modal-date" id="modal-date">--/--/----</span>
-          </div>
-          <h2 class="modal-title" id="modal-title">Tên sự kiện</h2>
-        </div>
-        <button id="modal-close" class="modal-close-btn" aria-label="Đóng">✕</button>
-      </header>
-
-      <!-- Tabs Ảnh / Video -->
-      <div class="modal-tabs-wrap">
-        <div class="modal-tabs">
-          <button id="tab-photo" class="tab-btn active">Ảnh (0)</button>
-          <button id="tab-video" class="tab-btn">Video (0)</button>
-        </div>
-      </div>
-
-      <!-- Media Grid -->
-      <div class="modal-body">
-        <div id="media-grid" class="gallery-grid"></div>
-        <div id="sentinel" class="scroll-sentinel"></div>
-        <button id="btn-load-more" class="btn-load-more" style="display: none;">Xem thêm ảnh</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ==================== 8. LIGHTBOX MODAL ==================== -->
-  <div id="lightbox" class="lightbox-overlay" style="display: none;">
-    <header class="lightbox-header">
-      <span id="lightbox-counter" class="lightbox-counter">1 / 1</span>
-      <div class="lightbox-actions">
-        <button id="btn-download" class="btn-download-flow">
-          <span>⬇️ Tải ảnh</span>
-        </button>
-        <button id="lightbox-close" class="btn-icon" aria-label="Đóng">✕</button>
-      </div>
+      <div class="header-years">2022 — 2025</div>
     </header>
 
-    <button id="lightbox-prev" class="lightbox-nav-btn lightbox-prev" aria-label="Ảnh trước">‹</button>
-    <button id="lightbox-next" class="lightbox-nav-btn lightbox-next" aria-label="Ảnh sau">›</button>
+    <main>
+      <!-- HERO SECTION -->
+      <section class="hero" id="top">
+        <div class="hero-image-wrap">
+          <img class="hero-image" src="images/classroom.jpg" alt="Lớp học 12A1 ngập tràn ánh nắng">
+        </div>
+        <div class="hero-overlay"></div>
+        <div class="hero-stamp">
+          <span>Niên khóa</span>
+          <strong>22—25</strong>
+        </div>
+        <div class="hero-content">
+          <p class="eyebrow light">Kỷ yếu điện tử · Lớp 12A1</p>
+          <h1>Ba năm.<br><em>Một thanh xuân.</em></h1>
+          <p class="hero-intro">Một cuộn phim nhỏ về những ngày chúng ta đã cùng nhau lớn lên.</p>
+        </div>
+        <button class="scroll-cue" id="scroll-cue-btn" type="button">
+          <span>Cuộn để bắt đầu</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v15M6 13l6 6 6-6"></path></svg>
+        </button>
+      </section>
 
-    <!-- BẢO VỆ TUYỆT ĐỐI "NHẤN GIỮ ĐỂ LƯU" -->
-    <div class="lightbox-body">
-      <div class="lightbox-img-wrapper">
-        <img id="lightbox-img" class="lightbox-img" src="" alt="Hình ảnh phóng to">
+      <!-- INTRO / OUR STORY -->
+      <section class="intro-section" id="our-story">
+        <div class="intro-number" aria-hidden="true">03</div>
+        <div class="intro-copy">
+          <p class="eyebrow">Chúng ta của những năm ấy</p>
+          <h2>Có một nơi gọi là <em>thanh xuân</em></h2>
+          <p class="intro-lead">Ba năm không quá dài, nhưng đủ để những người xa lạ trở thành một phần ký ức không thể thay thế của nhau.</p>
+          <div class="intro-stats">
+            <div><strong>40</strong><span>thành viên</span></div>
+            <div><strong>1.095</strong><span>ngày bên nhau</span></div>
+            <div><strong>∞</strong><span>kỷ niệm</span></div>
+          </div>
+        </div>
+        <figure class="intro-photo">
+          <img src="images/friends.jpg" alt="Hai người bạn mỉm cười trong sân trường">
+          <figcaption>“Gặp nhau là một điều may mắn.”</figcaption>
+        </figure>
+      </section>
+
+      <!-- TIMELINE SECTION -->
+      <section class="timeline-section" id="timeline">
+        <div class="timeline-heading">
+          <p class="eyebrow">Hành trình của chúng ta</p>
+          <h2>Những cột mốc nhỏ,<br>những ký ức thật lớn.</h2>
+        </div>
+        <div class="timeline">
+          <div class="timeline-line" aria-hidden="true"></div>
+          <div id="timeline-milestones">
+            <!-- Rendered by app.js -->
+          </div>
+        </div>
+      </section>
+
+      <!-- LETTER SECTION -->
+      <section class="letter-section" id="letter">
+        <div class="letter-photo">
+          <img src="images/graduation.jpg" alt="Nhóm bạn tung mũ trong ngày tốt nghiệp">
+        </div>
+        <div class="letter-paper">
+          <p class="eyebrow">Gửi chúng ta của mai sau</p>
+          <h2>Đừng quên nhé, chúng ta đã từng rực rỡ như thế.</h2>
+          <p>Mai này, khi mỗi người đã đi trên một con đường riêng, mong rằng chỉ cần vô tình nghe lại một bài hát cũ, nhìn thấy màu áo trắng, hay đi ngang qua sân trường, chúng ta vẫn sẽ mỉm cười vì đã có nhau trong những năm tháng đẹp nhất.</p>
+          <p class="signature">— Tập thể 12A1</p>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer>
+        <div>
+          <p class="footer-title">12A1 · Một thời để nhớ</p>
+          <p>Niên khóa 2022 — 2025</p>
+        </div>
+        <button type="button" id="footer-top-btn">
+          Về đầu trang <span>↑</span>
+        </button>
+      </footer>
+    </main>
+
+    <!-- GALLERY MODAL (HỘP THOẠI ẢNH) -->
+    <div class="gallery-modal" id="gallery-modal" role="dialog" aria-modal="true" style="display: none;">
+      <div class="gallery-panel">
+        <div class="gallery-header">
+          <div>
+            <p class="eyebrow" id="modal-eyebrow">2022 · Album kỷ niệm</p>
+            <h2 id="modal-title">Ngày đầu chúng ta gặp nhau</h2>
+          </div>
+          <button class="close-button" id="modal-close-btn" type="button" aria-label="Đóng thư viện ảnh">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"></path></svg>
+          </button>
+        </div>
+        <div class="gallery-grid" id="modal-gallery-grid">
+          <!-- Rendered dynamically -->
+        </div>
       </div>
     </div>
 
-    <footer class="lightbox-footer">
-      Nhấn giữ ảnh 1 giây để lưu vào máy
-    </footer>
-  </div>
-
-  <!-- ==================== 9. VIDEO OVERLAY ==================== -->
-  <div id="video-overlay" class="video-overlay" style="display: none;">
-    <button id="video-close" class="btn-icon video-close-btn" aria-label="Đóng video">✕</button>
-    <div id="video-container" class="video-container"></div>
-    <a id="video-drive-link" class="video-fallback-link" href="#" target="_blank" rel="noopener noreferrer">
-      Không xem được? Mở trên Google Drive ↗
-    </a>
-  </div>
-
-  <!-- Toast Notification Box -->
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- Scripts -->
-  <script src="js/config.js?v=2"></script>
-  <script src="js/media.js?v=2"></script>
-  <script src="js/app.js?v=2"></script>
-</body>
+    <!-- Script điều khiển -->
+    <script src="js/app.js?v=3"></script>
+  </body>
 </html>
